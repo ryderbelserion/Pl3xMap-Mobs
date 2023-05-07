@@ -26,7 +26,6 @@ package net.pl3x.map.mobs.markers;
 import java.util.Collection;
 import java.util.HashSet;
 import libs.org.checkerframework.checker.nullness.qual.NonNull;
-import net.pl3x.map.core.Pl3xMap;
 import net.pl3x.map.core.markers.Point;
 import net.pl3x.map.core.markers.layer.WorldLayer;
 import net.pl3x.map.core.markers.marker.Marker;
@@ -67,20 +66,18 @@ public class MobsLayer extends WorldLayer {
     @Override
     public @NonNull Collection<@NonNull Marker<@NonNull ?>> getMarkers() {
         Collection<Marker<?>> markers = new HashSet<>();
-        Pl3xMap.api().getWorldRegistry().forEach(world -> {
-            World bukkitWorld = Bukkit.getWorld(world.getName());
-            if (bukkitWorld == null) {
-                return;
-            }
-            bukkitWorld.getEntitiesByClass(Mob.class).forEach(mob -> {
-                String key = String.format("%s_%s_%s", KEY, getWorld().getName(), mob.getUniqueId());
-                markers.add(Marker.icon(key, point(mob.getLocation()), Icon.get(mob).getKey(), this.config.ICON_SIZE)
-                        .setOptions(Options.builder()
-                                .tooltipDirection(Tooltip.Direction.TOP)
-                                .tooltipContent(config.ICON_TOOLTIP_CONTENT
-                                        .replace("<mob-id>", mob(mob))
-                                ).build()));
-            });
+        World bukkitWorld = Bukkit.getWorld(this.config.getWorld().getName());
+        if (bukkitWorld == null) {
+            return markers;
+        }
+        bukkitWorld.getEntitiesByClass(Mob.class).forEach(mob -> {
+            String key = String.format("%s_%s_%s", KEY, getWorld().getName(), mob.getUniqueId());
+            markers.add(Marker.icon(key, point(mob.getLocation()), Icon.get(mob).getKey(), this.config.ICON_SIZE)
+                    .setOptions(Options.builder()
+                            .tooltipDirection(Tooltip.Direction.TOP)
+                            .tooltipContent(config.ICON_TOOLTIP_CONTENT
+                                    .replace("<mob-id>", mob(mob))
+                            ).build()));
         });
         return markers;
     }
