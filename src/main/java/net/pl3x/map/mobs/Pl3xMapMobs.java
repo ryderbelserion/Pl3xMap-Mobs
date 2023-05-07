@@ -23,12 +23,9 @@
  */
 package net.pl3x.map.mobs;
 
-import java.util.Arrays;
 import net.pl3x.map.core.Pl3xMap;
 import net.pl3x.map.mobs.listener.WorldListener;
 import net.pl3x.map.mobs.markers.MobsLayer;
-import org.bukkit.entity.EntityType;
-import org.bukkit.entity.Mob;
 import org.bukkit.plugin.java.JavaPlugin;
 
 public final class Pl3xMapMobs extends JavaPlugin {
@@ -41,13 +38,6 @@ public final class Pl3xMapMobs extends JavaPlugin {
         }
 
         getServer().getPluginManager().registerEvents(new WorldListener(), this);
-
-        Arrays.stream(EntityType.values())
-                .filter(type -> type.getEntityClass() != null)
-                .filter(type -> Mob.class.isAssignableFrom(type.getEntityClass()))
-                .map(Enum::name)
-                .sorted()
-                .forEach(name -> System.out.printf("%s(EntityType.%s)%n", name, name));
     }
 
     @Override
