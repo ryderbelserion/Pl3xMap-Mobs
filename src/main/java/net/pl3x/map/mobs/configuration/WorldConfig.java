@@ -69,6 +69,11 @@ public class WorldConfig extends AbstractConfig {
             Contents of the icon's popup.""")
     public String ICON_TOOLTIP_CONTENT = "<mob-id>";
 
+    @Key("only-show-mobs-exposed-to-sky")
+    @Comment("""
+            Only show mobs that are exposed to the sky.""")
+    public boolean ONLY_SHOW_MOBS_EXPOSED_TO_SKY = true;
+
     private final World world;
 
     public WorldConfig(@NonNull World world) {

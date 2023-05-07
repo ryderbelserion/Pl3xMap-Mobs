@@ -71,6 +71,9 @@ public class MobsLayer extends WorldLayer {
             return markers;
         }
         bukkitWorld.getEntitiesByClass(Mob.class).forEach(mob -> {
+            if (config.ONLY_SHOW_MOBS_EXPOSED_TO_SKY && bukkitWorld.getHighestBlockYAt(mob.getLocation()) > mob.getLocation().getY()) {
+                return;
+            }
             String key = String.format("%s_%s_%s", KEY, getWorld().getName(), mob.getUniqueId());
             markers.add(Marker.icon(key, point(mob.getLocation()), Icon.get(mob).getKey(), this.config.ICON_SIZE)
                     .setOptions(Options.builder()
