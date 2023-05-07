@@ -31,7 +31,6 @@ import javax.imageio.ImageIO;
 import net.pl3x.map.core.Pl3xMap;
 import net.pl3x.map.core.image.IconImage;
 import net.pl3x.map.mobs.Pl3xMapMobs;
-import net.pl3x.map.mobs.util.MobHelper;
 import org.bukkit.DyeColor;
 import org.bukkit.entity.Axolotl;
 import org.bukkit.entity.Bee;
@@ -82,7 +81,7 @@ public enum Icon {
     COD(EntityType.COD),
     COW(EntityType.COW),
     CREEPER(EntityType.CREEPER, Icon.<Creeper>predicate(mob -> !mob.isPowered())),
-    CREEPER_POWERED(EntityType.CREEPER, Icon.<Creeper>predicate(Creeper::isPowered)),
+    CREEPER_POWERED(EntityType.CREEPER, Icon.predicate(Creeper::isPowered)),
     DOLPHIN(EntityType.DOLPHIN),
     DONKEY(EntityType.DONKEY),
     DROWNED(EntityType.DROWNED),
@@ -115,13 +114,13 @@ public enum Icon {
     MUSHROOM_COW(EntityType.MUSHROOM_COW, Icon.<MushroomCow>predicate(mob -> mob.getVariant() == MushroomCow.Variant.RED)),
     MUSHROOM_COW_BROWN(EntityType.MUSHROOM_COW, Icon.<MushroomCow>predicate(mob -> mob.getVariant() == MushroomCow.Variant.BROWN)),
     OCELOT(EntityType.OCELOT),
-    PANDA_AGGRESSIVE(EntityType.PANDA, Icon.<Panda>predicate(mob -> MobHelper.getTrait(mob) == Panda.Gene.AGGRESSIVE)),
-    PANDA_BROWN(EntityType.PANDA, Icon.<Panda>predicate(mob -> MobHelper.getTrait(mob) == Panda.Gene.BROWN)),
-    PANDA_LAZY(EntityType.PANDA, Icon.<Panda>predicate(mob -> MobHelper.getTrait(mob) == Panda.Gene.LAZY)),
-    PANDA_NORMAL(EntityType.PANDA, Icon.<Panda>predicate(mob -> MobHelper.getTrait(mob) == Panda.Gene.NORMAL)),
-    PANDA_PLAYFUL(EntityType.PANDA, Icon.<Panda>predicate(mob -> MobHelper.getTrait(mob) == Panda.Gene.PLAYFUL)),
-    PANDA_WEAK(EntityType.PANDA, Icon.<Panda>predicate(mob -> MobHelper.getTrait(mob) == Panda.Gene.WEAK)),
-    PANDA_WORRIED(EntityType.PANDA, Icon.<Panda>predicate(mob -> MobHelper.getTrait(mob) == Panda.Gene.WORRIED)),
+    PANDA_AGGRESSIVE(EntityType.PANDA, Icon.<Panda>predicate(mob -> getTrait(mob) == Panda.Gene.AGGRESSIVE)),
+    PANDA_BROWN(EntityType.PANDA, Icon.<Panda>predicate(mob -> getTrait(mob) == Panda.Gene.BROWN)),
+    PANDA_LAZY(EntityType.PANDA, Icon.<Panda>predicate(mob -> getTrait(mob) == Panda.Gene.LAZY)),
+    PANDA_NORMAL(EntityType.PANDA, Icon.<Panda>predicate(mob -> getTrait(mob) == Panda.Gene.NORMAL)),
+    PANDA_PLAYFUL(EntityType.PANDA, Icon.<Panda>predicate(mob -> getTrait(mob) == Panda.Gene.PLAYFUL)),
+    PANDA_WEAK(EntityType.PANDA, Icon.<Panda>predicate(mob -> getTrait(mob) == Panda.Gene.WEAK)),
+    PANDA_WORRIED(EntityType.PANDA, Icon.<Panda>predicate(mob -> getTrait(mob) == Panda.Gene.WORRIED)),
     PARROT_BLUE(EntityType.PARROT, Icon.<Parrot>predicate(mob -> mob.getVariant() == Parrot.Variant.BLUE)),
     PARROT_CYAN(EntityType.PARROT, Icon.<Parrot>predicate(mob -> mob.getVariant() == Parrot.Variant.CYAN)),
     PARROT_GREEN(EntityType.PARROT, Icon.<Parrot>predicate(mob -> mob.getVariant() == Parrot.Variant.GREEN)),
@@ -268,5 +267,17 @@ public enum Icon {
 
     static <T extends Mob> Function<T, Boolean> predicate(Function<T, Boolean> predicate) {
         return predicate;
+    }
+
+    static Panda.Gene getTrait(Panda panda) {
+        Panda.Gene mainGene = panda.getMainGene();
+        if (!mainGene.isRecessive()) {
+            return mainGene;
+        }
+        return switch (mainGene) {
+            case BROWN -> Panda.Gene.BROWN;
+            case WEAK -> Panda.Gene.WEAK;
+            default -> Panda.Gene.NORMAL;
+        };
     }
 }
