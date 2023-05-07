@@ -1,155 +1,132 @@
+/*
+ * MIT License
+ *
+ * Copyright (c) 2020-2023 William Blake Galbreath
+ *
+ * Permission is hereby granted, free of charge, to any person obtaining a copy
+ * of this software and associated documentation files (the "Software"), to deal
+ * in the Software without restriction, including without limitation the rights
+ * to use, copy, modify, merge, publish, distribute, sublicense, and/or sell
+ * copies of the Software, and to permit persons to whom the Software is
+ * furnished to do so, subject to the following conditions:
+ *
+ * The above copyright notice and this permission notice shall be included in all
+ * copies or substantial portions of the Software.
+ *
+ * THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND, EXPRESS OR
+ * IMPLIED, INCLUDING BUT NOT LIMITED TO THE WARRANTIES OF MERCHANTABILITY,
+ * FITNESS FOR A PARTICULAR PURPOSE AND NONINFRINGEMENT. IN NO EVENT SHALL THE
+ * AUTHORS OR COPYRIGHT HOLDERS BE LIABLE FOR ANY CLAIM, DAMAGES OR OTHER
+ * LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM,
+ * OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
+ * SOFTWARE.
+ */
 package net.pl3x.map.mobs.configuration;
 
-import net.pl3x.map.api.MapWorld;
-import net.pl3x.map.mobs.Logger;
-import net.pl3x.map.mobs.data.Icons;
-import org.bukkit.entity.EntityType;
-import org.bukkit.entity.Mob;
-
-import java.util.Arrays;
-import java.util.HashMap;
-import java.util.HashSet;
-import java.util.List;
+import java.nio.file.Path;
 import java.util.Map;
-import java.util.Set;
-import java.util.UUID;
-import java.util.stream.Collectors;
+import libs.org.simpleyaml.configuration.ConfigurationSection;
+import net.pl3x.map.core.configuration.AbstractConfig;
+import net.pl3x.map.core.markers.Vector;
+import net.pl3x.map.core.world.World;
+import net.pl3x.map.mobs.Pl3xMapMobs;
+import org.checkerframework.checker.nullness.qual.NonNull;
+import org.checkerframework.checker.nullness.qual.Nullable;
 
-@SuppressWarnings("unused")
-public class WorldConfig {
-    private static final Map<UUID, WorldConfig> configs = new HashMap<>();
-
-    public static void reload() {
-        configs.clear();
-    }
-
-    public static WorldConfig get(MapWorld world) {
-        WorldConfig config = configs.get(world.uuid());
-        if (config == null) {
-            config = new WorldConfig(world);
-            configs.put(world.uuid(), config);
-        }
-        return config;
-    }
-
-    private final String worldName;
-
-    public WorldConfig(MapWorld world) {
-        this.worldName = world.name();
-        init();
-    }
-
-    public void init() {
-        Config.readConfig(WorldConfig.class, this);
-    }
-
-    private void set(String path, Object val) {
-        Config.CONFIG.addDefault("world-settings.default." + path, val);
-        Config.CONFIG.set("world-settings.default." + path, val);
-        if (Config.CONFIG.get("world-settings." + worldName + "." + path) != null) {
-            Config.CONFIG.addDefault("world-settings." + worldName + "." + path, val);
-            Config.CONFIG.set("world-settings." + worldName + "." + path, val);
-        }
-    }
-
-    private boolean getBoolean(String path, boolean def) {
-        Config.CONFIG.addDefault("world-settings.default." + path, def);
-        return Config.CONFIG.getBoolean("world-settings." + worldName + "." + path, Config.CONFIG.getBoolean("world-settings.default." + path));
-    }
-
-    private int getInt(String path, int def) {
-        Config.CONFIG.addDefault("world-settings.default." + path, def);
-        return Config.CONFIG.getInt("world-settings." + worldName + "." + path, Config.CONFIG.getInt("world-settings.default." + path));
-    }
-
-    private String getString(String path, String def) {
-        Config.CONFIG.addDefault("world-settings.default." + path, def);
-        return Config.CONFIG.getString("world-settings." + worldName + "." + path, Config.CONFIG.getString("world-settings.default." + path));
-    }
-
-    <T> List<?> getList(String path, T def) {
-        Config.CONFIG.addDefault("world-settings.default." + path, def);
-        return Config.CONFIG.getList("world-settings." + worldName + "." + path,
-                Config.CONFIG.getList("world-settings.default." + path));
-    }
-
-    public boolean ENABLED = true;
-
-    private void worldSettings() {
-        ENABLED = getBoolean("enabled", ENABLED);
-    }
-
+public class WorldConfig extends AbstractConfig {
+    @Key("layer.label")
+    @Comment("""
+            Label for map layer""")
     public String LAYER_LABEL = "Mobs";
+    @Key("layer.show-controls")
+    @Comment("""
+            Show controls for map layer""")
     public boolean LAYER_SHOW_CONTROLS = true;
-    public boolean LAYER_CONTROLS_HIDDEN = false;
-    public int LAYER_PRIORITY = 999;
-    public int LAYER_ZINDEX = 999;
+    @Key("layer.default-hidden")
+    @Comment("""
+            Whether map layer is hidden by default""")
+    public boolean LAYER_DEFAULT_HIDDEN = false;
+    @Key("layer.update-interval")
+    @Comment("""
+            Update interval for map layer""")
+    public int LAYER_UPDATE_INTERVAL = 1;
+    @Key("layer.priority")
+    @Comment("""
+            Priority for map layer""")
+    public int LAYER_PRIORITY = 99;
+    @Key("layer.z-index")
+    @Comment("""
+            zIndex for map layer""")
+    public int LAYER_ZINDEX = 1;
 
-    private void layerSettings() {
-        LAYER_LABEL = getString("layer.label", LAYER_LABEL);
-        LAYER_SHOW_CONTROLS = getBoolean("layer.controls.enabled", LAYER_SHOW_CONTROLS);
-        LAYER_CONTROLS_HIDDEN = getBoolean("layer.controls.hide-by-default", LAYER_CONTROLS_HIDDEN);
-        LAYER_PRIORITY = getInt("layer.priority", LAYER_PRIORITY);
-        LAYER_ZINDEX = getInt("layer.z-index", LAYER_ZINDEX);
+    @Key("marker.icon.size")
+    @Comment("""
+            The size (in pixels) the icon should be.""")
+    public Vector ICON_SIZE = new Vector(20, 20);
+
+    @Key("marker.popup.content")
+    @Comment("""
+            Contents of the icon's popup.""")
+    public String ICON_TOOLTIP_CONTENT = "<mob-id>";
+
+    private final World world;
+
+    public WorldConfig(@NonNull World world) {
+        this.world = world;
+        reload();
     }
 
-    public int MINIMUM_Y = 64;
-    public boolean SURFACE_ONLY = true;
-
-    public int ICON_SIZE = 16;
-    public String ICON_TOOLTIP = "{name}";
-
-    private void iconSettings() {
-        ICON_SIZE = getInt("icon.size", ICON_SIZE);
-        ICON_TOOLTIP = getString("icon.tooltip", ICON_TOOLTIP);
+    public @NonNull World getWorld() {
+        return this.world;
     }
 
-    public final Set<EntityType> ALLOWED_TYPES = new HashSet<>();
+    public void reload() {
+        Path mainDir = Pl3xMapMobs.getPlugin(Pl3xMapMobs.class).getDataFolder().toPath();
+        reload(mainDir.resolve("config.yml"), WorldConfig.class);
+    }
 
-    private void allowedTypes() {
-        ALLOWED_TYPES.clear();
-        getList("allowed-mobs", List.of(
-                "cat",
-                "chicken",
-                "cod",
-                "cow",
-                "dolphin",
-                "fox",
-                "horse",
-                "iron_golem",
-                "llama",
-                "mooshroom",
-                "mule",
-                "ocelot",
-                "panda",
-                "parrot",
-                "pig",
-                "polar_bear",
-                "pufferfish",
-                "rabbit",
-                "salmon",
-                "sheep",
-                "snow_golem",
-                "squid",
-                "strider",
-                "trader_llama",
-                "tropical_fish",
-                "turtle",
-                "villager",
-                "wandering_trader",
-                "wolf"
-        )).forEach(key -> {
-            if (key.toString().equals("*")) {
-                ALLOWED_TYPES.addAll(Icons.BY_TYPE.keySet());
-                return;
+    @Override
+    protected @NonNull Object getClassObject() {
+        return this;
+    }
+
+    @Override
+    protected @Nullable Object getValue(@NonNull String path, @Nullable Object def) {
+        if (getConfig().get("world-settings.default." + path) == null) {
+            set("world-settings.default." + path, def);
+        }
+        return get("world-settings." + this.world.getName() + "." + path,
+                get("world-settings.default." + path, def));
+    }
+
+    @Override
+    protected void setComment(@NonNull String path, @Nullable String comment) {
+        getConfig().setComment("world-settings.default." + path, comment);
+    }
+
+    @Override
+    protected @Nullable Object get(@NonNull String path) {
+        Object value = getConfig().get(path);
+        if (value == null) {
+            return null;
+        }
+        if ("marker.icon.size".equals(path.substring(path.indexOf(".", path.indexOf(".") + 1) + 1))) {
+            if (value instanceof ConfigurationSection section) {
+                return Vector.of(section.getDouble("x"), section.getDouble("z"));
+            } else if (value instanceof Map<?, ?>) {
+                @SuppressWarnings("unchecked")
+                Map<String, Double> map = (Map<String, Double>) value;
+                return Vector.of(map.get("x"), map.get("z"));
             }
-            //noinspection deprecation
-            EntityType type = EntityType.fromName(key.toString());
-            if (type != null) {
-                ALLOWED_TYPES.add(type);
-            } else {
-                Logger.warn("Unknown entity type: " + key);
-            }
-        });
+        }
+        return super.get(path);
+    }
+
+    @Override
+    protected void set(@NonNull String path, @Nullable Object value) {
+        if (value instanceof Vector vector) {
+            value = Map.of("x", vector.x(), "z", vector.z());
+        }
+        getConfig().set(path, value);
     }
 }

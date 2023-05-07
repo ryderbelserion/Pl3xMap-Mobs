@@ -1,8 +1,10 @@
-name: Pl3xMap-Mobs
-version: ${project.version}
-main: net.pl3x.map.mobs.Pl3xMapMobs
-api-version: 1.16
-authors: [ BillyGalbreath ]
-description: Mobs addon for Pl3xMap
+name: "${name}"
+main: "${group}.Pl3xMapMobs"
+version: "${version}"
+api-version: "1.19"
+load: "POSTWORLD"
+authors: ${authors}
+description: "${description}"
+website: "${website}"
 softdepend:
   - Pl3xMap
