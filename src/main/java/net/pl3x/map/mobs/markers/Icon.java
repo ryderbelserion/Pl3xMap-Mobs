@@ -51,6 +51,8 @@ import org.bukkit.entity.Snowman;
 import org.bukkit.entity.Strider;
 import org.bukkit.entity.TraderLlama;
 import org.bukkit.entity.Wolf;
+import org.jetbrains.annotations.NotNull;
+import org.jetbrains.annotations.Nullable;
 
 public enum Icon {
     ALLAY(EntityType.ALLAY),
@@ -219,27 +221,27 @@ public enum Icon {
     private final EntityType type;
     private final Function<Mob, Boolean> predicate;
 
-    Icon(EntityType type) {
+    Icon(@NotNull EntityType type) {
         this(type, null);
     }
 
     @SuppressWarnings("unchecked")
-    <T extends Mob> Icon(EntityType type, Function<T, Boolean> predicate) {
+    <T extends Mob> Icon(@NotNull EntityType type, @Nullable Function<T, Boolean> predicate) {
         this.name = name().toLowerCase(Locale.ROOT);
         this.key = String.format("pl3xmap_%s_mob", name);
         this.type = type;
         this.predicate = (Function<Mob, Boolean>) predicate;
     }
 
-    public String getKey() {
+    public @NotNull String getKey() {
         return this.key;
     }
 
-    public EntityType getType() {
+    public @NotNull EntityType getType() {
         return this.type;
     }
 
-    public static Icon get(Mob mob) {
+    public static @NotNull Icon get(@NotNull Mob mob) {
         for (Icon icon : values()) {
             if (icon.getType() == mob.getType()) {
                 if (icon.predicate == null || icon.predicate.apply(mob)) {
@@ -250,11 +252,11 @@ public enum Icon {
         throw new IllegalStateException();
     }
 
-    private static <T extends Mob> Function<T, Boolean> predicate(Function<T, Boolean> predicate) {
+    private static <T extends Mob> @NotNull Function<T, Boolean> predicate(@NotNull Function<T, Boolean> predicate) {
         return predicate;
     }
 
-    private static Panda.Gene getTrait(Panda panda) {
+    private static @NotNull Panda.Gene getTrait(@NotNull Panda panda) {
         Panda.Gene mainGene = panda.getMainGene();
         if (!mainGene.isRecessive()) {
             return mainGene;

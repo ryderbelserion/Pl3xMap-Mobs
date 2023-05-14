@@ -23,7 +23,6 @@
  */
 package net.pl3x.map.mobs.listener;
 
-import libs.org.checkerframework.checker.nullness.qual.NonNull;
 import net.pl3x.map.core.Pl3xMap;
 import net.pl3x.map.core.event.EventHandler;
 import net.pl3x.map.core.event.EventListener;
@@ -36,6 +35,7 @@ import net.pl3x.map.mobs.configuration.WorldConfig;
 import net.pl3x.map.mobs.markers.Icon;
 import net.pl3x.map.mobs.markers.MobsLayer;
 import org.bukkit.event.Listener;
+import org.jetbrains.annotations.NotNull;
 
 public class WorldListener implements EventListener, Listener {
     public WorldListener() {
@@ -43,30 +43,30 @@ public class WorldListener implements EventListener, Listener {
     }
 
     @EventHandler
-    public void onPl3xMapEnabled(@NonNull Pl3xMapEnabledEvent event) {
+    public void onPl3xMapEnabled(@NotNull Pl3xMapEnabledEvent event) {
         Icon.register();
     }
 
     @EventHandler
-    public void onServerLoaded(@NonNull ServerLoadedEvent event) {
+    public void onServerLoaded(@NotNull ServerLoadedEvent event) {
         Icon.register();
         Pl3xMap.api().getWorldRegistry().forEach(this::registerWorld);
     }
 
     @EventHandler
-    public void onWorldLoaded(@NonNull WorldLoadedEvent event) {
+    public void onWorldLoaded(@NotNull WorldLoadedEvent event) {
         registerWorld(event.getWorld());
     }
 
     @EventHandler
-    public void onWorldUnloaded(@NonNull WorldUnloadedEvent event) {
+    public void onWorldUnloaded(@NotNull WorldUnloadedEvent event) {
         try {
             event.getWorld().getLayerRegistry().unregister(MobsLayer.KEY);
         } catch (Throwable ignore) {
         }
     }
 
-    private void registerWorld(@NonNull World world) {
+    private void registerWorld(@NotNull World world) {
         world.getLayerRegistry().register(new MobsLayer(new WorldConfig(world)));
     }
 }

@@ -25,7 +25,6 @@ package net.pl3x.map.mobs.markers;
 
 import java.util.Collection;
 import java.util.HashSet;
-import libs.org.checkerframework.checker.nullness.qual.NonNull;
 import net.pl3x.map.core.markers.Point;
 import net.pl3x.map.core.markers.layer.WorldLayer;
 import net.pl3x.map.core.markers.marker.Marker;
@@ -36,13 +35,14 @@ import org.bukkit.Bukkit;
 import org.bukkit.Location;
 import org.bukkit.World;
 import org.bukkit.entity.Mob;
+import org.jetbrains.annotations.NotNull;
 
 public class MobsLayer extends WorldLayer {
     public static final String KEY = "pl3xmap_mobs";
 
     private final WorldConfig config;
 
-    public MobsLayer(@NonNull WorldConfig config) {
+    public MobsLayer(@NotNull WorldConfig config) {
         super(KEY, config.getWorld(), () -> config.LAYER_LABEL);
         this.config = config;
 
@@ -53,18 +53,18 @@ public class MobsLayer extends WorldLayer {
         setZIndex(config.LAYER_ZINDEX);
     }
 
-    private String mob(Mob mob) {
+    private @NotNull String mob(@NotNull Mob mob) {
         @SuppressWarnings("deprecation")
         String name = mob.getCustomName();
         return name == null ? mob.getName() : name;
     }
 
-    private Point point(Location loc) {
+    private @NotNull Point point(@NotNull Location loc) {
         return Point.of(loc.getBlockX(), loc.getBlockZ());
     }
 
     @Override
-    public @NonNull Collection<@NonNull Marker<@NonNull ?>> getMarkers() {
+    public @NotNull Collection<Marker<?>> getMarkers() {
         Collection<Marker<?>> markers = new HashSet<>();
         World bukkitWorld = Bukkit.getWorld(this.config.getWorld().getName());
         if (bukkitWorld == null) {
