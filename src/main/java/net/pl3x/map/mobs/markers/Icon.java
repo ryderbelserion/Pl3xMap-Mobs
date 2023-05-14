@@ -214,6 +214,7 @@ public enum Icon {
     ZOMBIE_VILLAGER(EntityType.ZOMBIE_VILLAGER),
     ZOMBIFIED_PIGLIN(EntityType.ZOMBIFIED_PIGLIN);
 
+    private final String name;
     private final String key;
     private final EntityType type;
     private final Function<Mob, Boolean> predicate;
@@ -224,26 +225,10 @@ public enum Icon {
 
     @SuppressWarnings("unchecked")
     <T extends Mob> Icon(EntityType type, Function<T, Boolean> predicate) {
+        this.name = name().toLowerCase(Locale.ROOT);
+        this.key = String.format("pl3xmap_%s_mob", name);
         this.type = type;
         this.predicate = (Function<Mob, Boolean>) predicate;
-
-        Pl3xMapMobs plugin = Pl3xMapMobs.getPlugin(Pl3xMapMobs.class);
-
-        String name = name().toLowerCase(Locale.ROOT);
-
-        this.key = String.format("pl3xmap_%s_mob", name);
-        String filename = String.format("icons%s%s.png", File.separator, name);
-        File file = new File(plugin.getDataFolder(), filename);
-        if (!file.exists()) {
-            plugin.saveResource(filename, false);
-        }
-
-        try {
-            Pl3xMap.api().getIconRegistry().register(new IconImage(this.key, ImageIO.read(file), "png"));
-        } catch (IOException e) {
-            plugin.getLogger().warning("Failed to register icon (" + name + ") " + filename);
-            e.printStackTrace();
-        }
     }
 
     public String getKey() {
@@ -265,11 +250,11 @@ public enum Icon {
         throw new IllegalStateException();
     }
 
-    static <T extends Mob> Function<T, Boolean> predicate(Function<T, Boolean> predicate) {
+    private static <T extends Mob> Function<T, Boolean> predicate(Function<T, Boolean> predicate) {
         return predicate;
     }
 
-    static Panda.Gene getTrait(Panda panda) {
+    private static Panda.Gene getTrait(Panda panda) {
         Panda.Gene mainGene = panda.getMainGene();
         if (!mainGene.isRecessive()) {
             return mainGene;
@@ -279,5 +264,22 @@ public enum Icon {
             case WEAK -> Panda.Gene.WEAK;
             default -> Panda.Gene.NORMAL;
         };
+    }
+
+    public static void register() {
+        Pl3xMapMobs plugin = Pl3xMapMobs.getPlugin(Pl3xMapMobs.class);
+        for (Icon icon : values()) {
+            String filename = String.format("icons%s%s.png", File.separator, icon.name);
+            File file = new File(plugin.getDataFolder(), filename);
+            if (!file.exists()) {
+                plugin.saveResource(filename, false);
+            }
+            try {
+                Pl3xMap.api().getIconRegistry().register(new IconImage(icon.key, ImageIO.read(file), "png"));
+            } catch (IOException e) {
+                plugin.getLogger().warning("Failed to register icon (" + icon.name + ") " + filename);
+                e.printStackTrace();
+            }
+        }
     }
 }

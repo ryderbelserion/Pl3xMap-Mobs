@@ -27,11 +27,13 @@ import libs.org.checkerframework.checker.nullness.qual.NonNull;
 import net.pl3x.map.core.Pl3xMap;
 import net.pl3x.map.core.event.EventHandler;
 import net.pl3x.map.core.event.EventListener;
+import net.pl3x.map.core.event.server.Pl3xMapEnabledEvent;
 import net.pl3x.map.core.event.server.ServerLoadedEvent;
 import net.pl3x.map.core.event.world.WorldLoadedEvent;
 import net.pl3x.map.core.event.world.WorldUnloadedEvent;
 import net.pl3x.map.core.world.World;
 import net.pl3x.map.mobs.configuration.WorldConfig;
+import net.pl3x.map.mobs.markers.Icon;
 import net.pl3x.map.mobs.markers.MobsLayer;
 import org.bukkit.event.Listener;
 
@@ -41,7 +43,13 @@ public class WorldListener implements EventListener, Listener {
     }
 
     @EventHandler
+    public void onPl3xMapEnabled(@NonNull Pl3xMapEnabledEvent event) {
+        Icon.register();
+    }
+
+    @EventHandler
     public void onServerLoaded(@NonNull ServerLoadedEvent event) {
+        Icon.register();
         Pl3xMap.api().getWorldRegistry().forEach(this::registerWorld);
     }
 
