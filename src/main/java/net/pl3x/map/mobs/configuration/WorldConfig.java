@@ -34,6 +34,7 @@ import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
 
 public class WorldConfig extends AbstractConfig {
+
     @Key("layer.label")
     @Comment("""
             Label for map layer""")
@@ -100,8 +101,8 @@ public class WorldConfig extends AbstractConfig {
         if (getConfig().get("world-settings.default." + path) == null) {
             set("world-settings.default." + path, def);
         }
-        return get("world-settings." + this.world.getName() + "." + path,
-                get("world-settings.default." + path, def));
+
+        return get("world-settings." + this.world.getName() + "." + path, get("world-settings.default." + path, def));
     }
 
     @Override
@@ -112,9 +113,11 @@ public class WorldConfig extends AbstractConfig {
     @Override
     protected @Nullable Object get(@NotNull String path) {
         Object value = getConfig().get(path);
+
         if (value == null) {
             return null;
         }
+
         if ("marker.icon.size".equals(path.substring(path.indexOf(".", path.indexOf(".") + 1) + 1))) {
             if (value instanceof ConfigurationSection section) {
                 return Vector.of(section.getDouble("x"), section.getDouble("z"));
@@ -124,6 +127,7 @@ public class WorldConfig extends AbstractConfig {
                 return Vector.of(map.get("x"), map.get("z"));
             }
         }
+
         return super.get(path);
     }
 
@@ -132,6 +136,7 @@ public class WorldConfig extends AbstractConfig {
         if (value instanceof Vector vector) {
             value = Map.of("x", vector.x(), "z", vector.z());
         }
+
         getConfig().set(path, value);
     }
 }

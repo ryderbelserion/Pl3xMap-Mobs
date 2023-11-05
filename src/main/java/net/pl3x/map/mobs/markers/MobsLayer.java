@@ -67,9 +67,11 @@ public class MobsLayer extends WorldLayer {
     public @NotNull Collection<Marker<?>> getMarkers() {
         Collection<Marker<?>> markers = new HashSet<>();
         World bukkitWorld = Bukkit.getWorld(this.config.getWorld().getName());
+
         if (bukkitWorld == null) {
             return markers;
         }
+
         bukkitWorld.getEntitiesByClass(Mob.class).forEach(mob -> {
             if (config.ONLY_SHOW_MOBS_EXPOSED_TO_SKY && bukkitWorld.getHighestBlockYAt(mob.getLocation()) > mob.getLocation().getY()) {
                 return;
@@ -82,6 +84,7 @@ public class MobsLayer extends WorldLayer {
                                     .replace("<mob-id>", mob(mob))
                             ).build()));
         });
+
         return markers;
     }
 }

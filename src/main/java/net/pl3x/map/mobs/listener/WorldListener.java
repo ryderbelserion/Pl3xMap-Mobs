@@ -38,6 +38,7 @@ import org.bukkit.event.Listener;
 import org.jetbrains.annotations.NotNull;
 
 public class WorldListener implements EventListener, Listener {
+
     public WorldListener() {
         Pl3xMap.api().getEventRegistry().register(this);
     }
@@ -62,8 +63,7 @@ public class WorldListener implements EventListener, Listener {
     public void onWorldUnloaded(@NotNull WorldUnloadedEvent event) {
         try {
             event.getWorld().getLayerRegistry().unregister(MobsLayer.KEY);
-        } catch (Throwable ignore) {
-        }
+        } catch (Throwable ignore) {}
     }
 
     private void registerWorld(@NotNull World world) {

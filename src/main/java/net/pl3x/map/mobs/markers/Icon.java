@@ -27,6 +27,7 @@ import java.io.File;
 import java.io.IOException;
 import java.util.Locale;
 import java.util.function.Function;
+import java.util.logging.Level;
 import javax.imageio.ImageIO;
 import net.pl3x.map.core.Pl3xMap;
 import net.pl3x.map.core.image.IconImage;
@@ -258,6 +259,7 @@ public enum Icon {
 
     private static @NotNull Panda.Gene getTrait(@NotNull Panda panda) {
         Panda.Gene mainGene = panda.getMainGene();
+
         if (!mainGene.isRecessive()) {
             return mainGene;
         }
@@ -270,6 +272,7 @@ public enum Icon {
 
     public static void register() {
         Pl3xMapMobs plugin = Pl3xMapMobs.getPlugin(Pl3xMapMobs.class);
+
         for (Icon icon : values()) {
             String filename = String.format("icons%s%s.png", File.separator, icon.name);
             File file = new File(plugin.getDataFolder(), filename);
@@ -279,8 +282,7 @@ public enum Icon {
             try {
                 Pl3xMap.api().getIconRegistry().register(new IconImage(icon.key, ImageIO.read(file), "png"));
             } catch (IOException e) {
-                plugin.getLogger().warning("Failed to register icon (" + icon.name + ") " + filename);
-                e.printStackTrace();
+                plugin.getLogger().log(Level.WARNING,"Failed to register icon (" + icon.name + ") " + filename, e);
             }
         }
     }

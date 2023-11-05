@@ -29,6 +29,7 @@ import net.pl3x.map.mobs.markers.MobsLayer;
 import org.bukkit.plugin.java.JavaPlugin;
 
 public final class Pl3xMapMobs extends JavaPlugin {
+
     @Override
     public void onEnable() {
         if (!getServer().getPluginManager().isPluginEnabled("Pl3xMap")) {
