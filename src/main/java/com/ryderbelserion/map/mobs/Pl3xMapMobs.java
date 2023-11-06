@@ -46,8 +46,7 @@ public final class Pl3xMapMobs extends JavaPlugin {
         Pl3xMap.api().getWorldRegistry().forEach(world -> {
             try {
                 world.getLayerRegistry().unregister(MobsLayer.KEY);
-            } catch (Throwable ignore) {
-            }
+            } catch (Throwable ignore) {}
         });
     }
 }

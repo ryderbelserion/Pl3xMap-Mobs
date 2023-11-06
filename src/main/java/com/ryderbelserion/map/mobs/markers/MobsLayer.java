@@ -25,6 +25,8 @@ package com.ryderbelserion.map.mobs.markers;
 
 import java.util.Collection;
 import java.util.HashSet;
+
+import com.ryderbelserion.map.mobs.Pl3xMapMobs;
 import net.pl3x.map.core.markers.Point;
 import net.pl3x.map.core.markers.layer.WorldLayer;
 import net.pl3x.map.core.markers.marker.Marker;
@@ -35,9 +37,13 @@ import org.bukkit.Bukkit;
 import org.bukkit.Location;
 import org.bukkit.World;
 import org.bukkit.entity.Mob;
+import org.bukkit.plugin.java.JavaPlugin;
 import org.jetbrains.annotations.NotNull;
 
 public class MobsLayer extends WorldLayer {
+
+    public static final Pl3xMapMobs plugin = JavaPlugin.getPlugin(Pl3xMapMobs.class);
+
     public static final String KEY = "pl3xmap_mobs";
 
     private final WorldConfig config;
@@ -72,7 +78,7 @@ public class MobsLayer extends WorldLayer {
             return markers;
         }
 
-        bukkitWorld.getEntitiesByClass(Mob.class).forEach(mob -> {
+        plugin.getServer().getScheduler().runTask(plugin, () -> bukkitWorld.getEntitiesByClass(Mob.class).forEach(mob -> {
             if (config.ONLY_SHOW_MOBS_EXPOSED_TO_SKY && bukkitWorld.getHighestBlockYAt(mob.getLocation()) > mob.getLocation().getY()) {
                 return;
             }
@@ -83,7 +89,7 @@ public class MobsLayer extends WorldLayer {
                             .tooltipContent(config.ICON_TOOLTIP_CONTENT
                                     .replace("<mob-id>", mob(mob))
                             ).build()));
-        });
+        }));
 
         return markers;
     }
