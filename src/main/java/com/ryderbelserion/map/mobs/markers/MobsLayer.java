@@ -21,7 +21,7 @@
  * OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
  * SOFTWARE.
  */
-package net.pl3x.map.mobs.markers;
+package com.ryderbelserion.map.mobs.markers;
 
 import java.util.Collection;
 import java.util.HashSet;
@@ -30,7 +30,7 @@ import net.pl3x.map.core.markers.layer.WorldLayer;
 import net.pl3x.map.core.markers.marker.Marker;
 import net.pl3x.map.core.markers.option.Options;
 import net.pl3x.map.core.markers.option.Tooltip;
-import net.pl3x.map.mobs.configuration.WorldConfig;
+import com.ryderbelserion.map.mobs.configuration.WorldConfig;
 import org.bukkit.Bukkit;
 import org.bukkit.Location;
 import org.bukkit.World;

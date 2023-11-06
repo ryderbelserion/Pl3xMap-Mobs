@@ -21,8 +21,10 @@
  * OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
  * SOFTWARE.
  */
-package net.pl3x.map.mobs.listener;
+package com.ryderbelserion.map.mobs.listener;
 
+import com.ryderbelserion.map.mobs.markers.Icon;
+import com.ryderbelserion.map.mobs.markers.MobsLayer;
 import net.pl3x.map.core.Pl3xMap;
 import net.pl3x.map.core.event.EventHandler;
 import net.pl3x.map.core.event.EventListener;
@@ -31,9 +33,7 @@ import net.pl3x.map.core.event.server.ServerLoadedEvent;
 import net.pl3x.map.core.event.world.WorldLoadedEvent;
 import net.pl3x.map.core.event.world.WorldUnloadedEvent;
 import net.pl3x.map.core.world.World;
-import net.pl3x.map.mobs.configuration.WorldConfig;
-import net.pl3x.map.mobs.markers.Icon;
-import net.pl3x.map.mobs.markers.MobsLayer;
+import com.ryderbelserion.map.mobs.configuration.WorldConfig;
 import org.bukkit.event.Listener;
 import org.jetbrains.annotations.NotNull;
 

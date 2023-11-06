@@ -21,11 +21,11 @@
  * OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
  * SOFTWARE.
  */
-package net.pl3x.map.mobs;
+package com.ryderbelserion.map.mobs;
 
 import net.pl3x.map.core.Pl3xMap;
-import net.pl3x.map.mobs.listener.WorldListener;
-import net.pl3x.map.mobs.markers.MobsLayer;
+import com.ryderbelserion.map.mobs.listener.WorldListener;
+import com.ryderbelserion.map.mobs.markers.MobsLayer;
 import org.bukkit.plugin.java.JavaPlugin;
 
 public final class Pl3xMapMobs extends JavaPlugin {

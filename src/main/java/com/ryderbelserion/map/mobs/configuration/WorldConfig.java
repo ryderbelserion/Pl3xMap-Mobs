@@ -21,15 +21,16 @@
  * OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
  * SOFTWARE.
  */
-package net.pl3x.map.mobs.configuration;
+package com.ryderbelserion.map.mobs.configuration;
 
 import java.nio.file.Path;
 import java.util.Map;
+
+import com.ryderbelserion.map.mobs.Pl3xMapMobs;
 import libs.org.simpleyaml.configuration.ConfigurationSection;
 import net.pl3x.map.core.configuration.AbstractConfig;
 import net.pl3x.map.core.markers.Vector;
 import net.pl3x.map.core.world.World;
-import net.pl3x.map.mobs.Pl3xMapMobs;
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
 

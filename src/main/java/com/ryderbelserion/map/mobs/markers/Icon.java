@@ -21,7 +21,7 @@
  * OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
  * SOFTWARE.
  */
-package net.pl3x.map.mobs.markers;
+package com.ryderbelserion.map.mobs.markers;
 
 import java.io.File;
 import java.io.IOException;
@@ -29,9 +29,10 @@ import java.util.Locale;
 import java.util.function.Function;
 import java.util.logging.Level;
 import javax.imageio.ImageIO;
+
+import com.ryderbelserion.map.mobs.Pl3xMapMobs;
 import net.pl3x.map.core.Pl3xMap;
 import net.pl3x.map.core.image.IconImage;
-import net.pl3x.map.mobs.Pl3xMapMobs;
 import org.bukkit.DyeColor;
 import org.bukkit.entity.Axolotl;
 import org.bukkit.entity.Bee;
@@ -263,6 +264,7 @@ public enum Icon {
         if (!mainGene.isRecessive()) {
             return mainGene;
         }
+
         return switch (mainGene) {
             case BROWN -> Panda.Gene.BROWN;
             case WEAK -> Panda.Gene.WEAK;
