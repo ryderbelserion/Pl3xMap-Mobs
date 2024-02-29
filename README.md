@@ -12,7 +12,7 @@ Mob icons are provided by [ADHCMC](https://github.com/ADHDMC) ([CC0-1.0](https:/
 [https://github.com/ADHDMC/Entity-Icons](https://github.com/ADHDMC/Entity-Icons)
 
 ## Downloads
-https://ci.crazycrew.us/view/ryderbelserion/job/Pl3xMap-Mobs/
+https://jenkins.crazycrew.us/view/other/job/Pl3xMap-Mobs/
 
 ## Installation
 
