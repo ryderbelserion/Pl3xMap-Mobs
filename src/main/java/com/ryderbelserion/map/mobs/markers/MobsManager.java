@@ -5,60 +5,67 @@ import net.pl3x.map.core.markers.Point;
 import net.pl3x.map.core.markers.marker.Marker;
 import net.pl3x.map.core.markers.option.Options;
 import net.pl3x.map.core.markers.option.Tooltip;
-import org.bukkit.Bukkit;
 import org.bukkit.Location;
 import org.bukkit.entity.Mob;
 import org.jetbrains.annotations.NotNull;
-
 import java.util.*;
+import java.util.concurrent.ConcurrentHashMap;
 
 public class MobsManager {
 
-    private static final Map<String, HashSet<Marker<?>>> activeMarkers = new HashMap<>();
+    private final Map<String, Collection<Marker<?>>> activeMarkers = new ConcurrentHashMap<>();
 
-    public static Set<Marker<?>> getActiveMarkers(@NotNull String worldName) {
-        return Collections.unmodifiableSet(activeMarkers.get(worldName));
+    public Collection<Marker<?>> getActiveMarkers(@NotNull String worldName) {
+        Collection<Marker<?>> markers = this.activeMarkers.get(worldName);
+
+        if (markers != null) {
+            return markers;
+        }
+
+        return Collections.emptySet();
     }
 
-    public static void clearMarkers(@NotNull String worldName) {
-        activeMarkers.remove(worldName);
+    public void clearMarkers(@NotNull String worldName) {
+        if (this.activeMarkers.isEmpty() || worldName.isEmpty() || worldName.isBlank()) return;
+
+        this.activeMarkers.remove(worldName);
     }
 
-    public static void addWorld(@NotNull String worldName) {
-        activeMarkers.put(worldName, new HashSet<>());
+    public void addWorld(@NotNull String worldName) {
+        if (this.activeMarkers.containsKey(worldName)) return;
+
+        this.activeMarkers.put(worldName, new HashSet<>());
     }
 
-    public static void addMarker(@NotNull String key, @NotNull Mob mob, @NotNull WorldConfig config) {
+    public void addMarker(@NotNull String key, @NotNull Mob mob, @NotNull WorldConfig config) {
         net.pl3x.map.core.markers.marker.Icon icon = getIcon(key, mob, config);
 
         // Remove it if it exists.
-        removeMarker(mob.getUniqueId(), config);
+        removeMarker(mob);
 
-        // then add it back.
-        activeMarkers.get(config.getWorld().getName()).add(icon);
+        // Add new icon.
+        this.activeMarkers.get(mob.getWorld().getName()).add(icon);
     }
 
-    public static void removeMarker(@NotNull UUID uuid, @NotNull WorldConfig config) {
-        Mob mob = (Mob) Bukkit.getEntity(uuid);
+    public void removeMarker(@NotNull Mob mob) {
+        String worldName = mob.getWorld().getName();
 
-        if (mob != null) {
-            String key = String.format("%s_%s_%s", "pl3xmap_mobs", mob.getWorld().getName(), mob.getUniqueId());
+        String key = String.format("%s_%s_%s", "pl3xmap_mobs", worldName, mob.getUniqueId());
 
-            activeMarkers.get(config.getWorld().getName()).removeIf(value -> value.getKey().equalsIgnoreCase(key));
-        }
+        this.activeMarkers.get(worldName).removeIf(marker -> marker.getKey().equals(key));
     }
 
-    private static @NotNull String mob(@NotNull Mob mob) {
+    private @NotNull String mob(@NotNull Mob mob) {
         String name = mob.getCustomName();
 
         return name == null ? mob.getName() : name;
     }
 
-    private static @NotNull Point point(@NotNull Location loc) {
+    private @NotNull Point point(@NotNull Location loc) {
         return Point.of(loc.getBlockX(), loc.getBlockZ());
     }
 
-    public static net.pl3x.map.core.markers.marker.Icon getIcon(String key, Mob mob, WorldConfig config) {
+    public net.pl3x.map.core.markers.marker.Icon getIcon(String key, Mob mob, WorldConfig config) {
         return Marker.icon(key, point(mob.getLocation()), Icon.get(mob).getKey(), config.ICON_SIZE)
                 .setOptions(Options.builder()
                         .tooltipDirection(Tooltip.Direction.TOP)

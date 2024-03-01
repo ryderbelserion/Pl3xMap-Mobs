@@ -29,7 +29,6 @@ import java.util.Locale;
 import java.util.function.Function;
 import java.util.logging.Level;
 import javax.imageio.ImageIO;
-
 import com.ryderbelserion.map.mobs.Pl3xMapMobs;
 import net.pl3x.map.core.Pl3xMap;
 import net.pl3x.map.core.image.IconImage;
@@ -41,6 +40,7 @@ import org.bukkit.entity.Creeper;
 import org.bukkit.entity.EntityType;
 import org.bukkit.entity.Fox;
 import org.bukkit.entity.Frog;
+import org.bukkit.entity.Horse;
 import org.bukkit.entity.Llama;
 import org.bukkit.entity.Mob;
 import org.bukkit.entity.MushroomCow;
@@ -57,6 +57,7 @@ import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
 
 public enum Icon {
+
     ALLAY(EntityType.ALLAY),
     AXOLOTL_BLUE(EntityType.AXOLOTL, Icon.<Axolotl>predicate(mob -> mob.getVariant() == Axolotl.Variant.BLUE)),
     AXOLOTL_BROWN(EntityType.AXOLOTL, Icon.<Axolotl>predicate(mob -> mob.getVariant() == Axolotl.Variant.WILD)),
@@ -105,6 +106,13 @@ public enum Icon {
     GUARDIAN(EntityType.GUARDIAN),
     HOGLIN(EntityType.HOGLIN),
     HORSE(EntityType.HORSE), //todo() (7 colors, 5 variants, 35 total, yikes)
+    //HORSE_BROWN(EntityType.HORSE, Icon.<Horse>predicate(mob -> mob.getColor() == Horse.Color.BROWN)),
+    //HORSE_CREAMY(EntityType.HORSE, Icon.<Horse>predicate(mob -> mob.getColor() == Horse.Color.CREAMY)),
+    //HORSE_GRAY(EntityType.HORSE, Icon.<Horse>predicate(mob -> mob.getColor() == Horse.Color.GRAY)),
+    //HORSE_WHITE(EntityType.HORSE, Icon.<Horse>predicate(mob -> mob.getColor() == Horse.Color.WHITE)),
+    //HORSE_BLACK(EntityType.HORSE, Icon.<Horse>predicate(mob -> mob.getColor() == Horse.Color.BLACK)),
+    //HORSE_CHESTNUT(EntityType.HORSE, Icon.<Horse>predicate(mob -> mob.getColor() == Horse.Color.CHESTNUT)),
+    //HORSE_DARK_BROWN(EntityType.HORSE, Icon.<Horse>predicate(mob -> mob.getColor() == Horse.Color.DARK_BROWN)),
     HUSK(EntityType.HUSK),
     ILLUSIONER(EntityType.ILLUSIONER),
     IRON_GOLEM(EntityType.IRON_GOLEM),
@@ -249,11 +257,16 @@ public enum Icon {
                 }
             }
         }
+
         throw new IllegalStateException();
     }
 
     private static <T extends Mob> @NotNull Function<T, Boolean> predicate(@NotNull Function<T, Boolean> predicate) {
         return predicate;
+    }
+
+    private static @NotNull Horse.Style getHorse(@NotNull Horse horse) {
+        return horse.getStyle();
     }
 
     private static @NotNull Panda.Gene getTrait(@NotNull Panda panda) {
@@ -271,14 +284,16 @@ public enum Icon {
     }
 
     public static void register() {
-        Pl3xMapMobs plugin = Pl3xMapMobs.getPlugin(Pl3xMapMobs.class);
+        Pl3xMapMobs plugin = Pl3xMapMobs.get();
 
         for (Icon icon : values()) {
             String filename = String.format("icons%s%s.png", File.separator, icon.name);
             File file = new File(plugin.getDataFolder(), filename);
+
             if (!file.exists()) {
                 plugin.saveResource(filename, false);
             }
+
             try {
                 Pl3xMap.api().getIconRegistry().register(new IconImage(icon.key, ImageIO.read(file), "png"));
             } catch (IOException e) {

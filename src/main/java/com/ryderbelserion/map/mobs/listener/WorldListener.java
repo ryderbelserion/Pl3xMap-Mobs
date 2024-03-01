@@ -23,9 +23,9 @@
  */
 package com.ryderbelserion.map.mobs.listener;
 
+import com.ryderbelserion.map.mobs.Pl3xMapMobs;
 import com.ryderbelserion.map.mobs.markers.Icon;
 import com.ryderbelserion.map.mobs.markers.MobsLayer;
-import com.ryderbelserion.map.mobs.markers.MobsManager;
 import net.pl3x.map.core.Pl3xMap;
 import net.pl3x.map.core.event.EventHandler;
 import net.pl3x.map.core.event.EventListener;
@@ -39,6 +39,9 @@ import org.bukkit.event.Listener;
 import org.jetbrains.annotations.NotNull;
 
 public class WorldListener implements EventListener, Listener {
+
+    @NotNull
+    private final Pl3xMapMobs plugin = Pl3xMapMobs.get();
 
     public WorldListener() {
         Pl3xMap.api().getEventRegistry().register(this);
@@ -64,7 +67,7 @@ public class WorldListener implements EventListener, Listener {
     public void onWorldUnloaded(@NotNull WorldUnloadedEvent event) {
         try {
             // Clear when world is unloaded.
-            MobsManager.clearMarkers(event.getWorld().getName());
+            this.plugin.getMobsManager().clearMarkers(event.getWorld().getName());
 
             // Unregister layer.
             event.getWorld().getLayerRegistry().unregister(MobsLayer.KEY);
@@ -72,10 +75,10 @@ public class WorldListener implements EventListener, Listener {
     }
 
     private void registerWorld(@NotNull World world) {
-        // Add new world
-        MobsManager.addWorld(world.getName());
+        // Add new world.
+        this.plugin.getMobsManager().addWorld(world.getName());
 
-        // Add new layer
+        // Add new layer.
         world.getLayerRegistry().register(new MobsLayer(new WorldConfig(world)));
     }
 }

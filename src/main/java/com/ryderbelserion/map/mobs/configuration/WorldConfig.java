@@ -89,11 +89,12 @@ public class WorldConfig extends AbstractConfig {
         return this.world;
     }
 
-    public void reload() {
-        Path mainDir = Pl3xMapMobs.getPlugin(Pl3xMapMobs.class).getDataFolder().toPath();
-        reload(mainDir.resolve("config.yml"), WorldConfig.class);
+    @NotNull
+    private final Pl3xMapMobs plugin = Pl3xMapMobs.get();
 
-        MobsManager.clearMarkers(getWorld().getName());
+    public void reload() {
+        Path mainDir = this.plugin.getDataFolder().toPath();
+        reload(mainDir.resolve("config.yml"), WorldConfig.class);
     }
 
     @Override
@@ -127,8 +128,8 @@ public class WorldConfig extends AbstractConfig {
             if (value instanceof ConfigurationSection section) {
                 return Vector.of(section.getDouble("x"), section.getDouble("z"));
             } else if (value instanceof Map<?, ?>) {
-                @SuppressWarnings("unchecked")
                 Map<String, Double> map = (Map<String, Double>) value;
+
                 return Vector.of(map.get("x"), map.get("z"));
             }
         }
