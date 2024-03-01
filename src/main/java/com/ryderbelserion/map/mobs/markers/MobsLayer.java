@@ -33,6 +33,8 @@ import org.bukkit.entity.Mob;
 import org.bukkit.plugin.java.JavaPlugin;
 import org.jetbrains.annotations.NotNull;
 import java.util.Collection;
+import java.util.HashSet;
+import java.util.Set;
 
 public class MobsLayer extends WorldLayer {
 
@@ -55,7 +57,7 @@ public class MobsLayer extends WorldLayer {
     }
 
     @Override
-    public @NotNull Collection<Marker<?>> getMarkers() {
+    public @NotNull Set<Marker<?>> getMarkers() {
         retrieveMarkers();
 
         return MobsManager.getActiveMarkers(getWorld().getName());
@@ -75,6 +77,8 @@ public class MobsLayer extends WorldLayer {
                     }
 
                     String key = String.format("%s_%s_%s", KEY, getWorld().getName(), mob.getUniqueId());
+
+                    MobsManager.addWorld(getWorld().getName());
 
                     MobsManager.addMarker(key, mob, this.config);
                 }

@@ -14,21 +14,21 @@ import java.util.*;
 
 public class MobsManager {
 
-    private static final Map<String, Collection<Marker<?>>> activeMarkers = new HashMap<>();
+    private static final Map<String, HashSet<Marker<?>>> activeMarkers = new HashMap<>();
 
-    public static Collection<Marker<?>> getActiveMarkers(String worldName) {
-        return Collections.unmodifiableCollection(activeMarkers.get(worldName));
+    public static Set<Marker<?>> getActiveMarkers(@NotNull String worldName) {
+        return Collections.unmodifiableSet(activeMarkers.get(worldName));
     }
 
-    public static void clearMarkers(String worldName) {
-        if (activeMarkers.get(worldName) != null) {
-            activeMarkers.get(worldName).clear();
-        }
-
+    public static void clearMarkers(@NotNull String worldName) {
         activeMarkers.remove(worldName);
     }
 
-    public static void addMarker(String key, Mob mob, WorldConfig config) {
+    public static void addWorld(@NotNull String worldName) {
+        activeMarkers.put(worldName, new HashSet<>());
+    }
+
+    public static void addMarker(@NotNull String key, @NotNull Mob mob, @NotNull WorldConfig config) {
         net.pl3x.map.core.markers.marker.Icon icon = getIcon(key, mob, config);
 
         // Remove it if it exists.
@@ -38,7 +38,7 @@ public class MobsManager {
         activeMarkers.get(config.getWorld().getName()).add(icon);
     }
 
-    public static void removeMarker(UUID uuid, WorldConfig config) {
+    public static void removeMarker(@NotNull UUID uuid, @NotNull WorldConfig config) {
         Mob mob = (Mob) Bukkit.getEntity(uuid);
 
         if (mob != null) {

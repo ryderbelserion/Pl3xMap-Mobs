@@ -72,6 +72,10 @@ public class WorldListener implements EventListener, Listener {
     }
 
     private void registerWorld(@NotNull World world) {
+        // Add new world
+        MobsManager.addWorld(world.getName());
+
+        // Add new layer
         world.getLayerRegistry().register(new MobsLayer(new WorldConfig(world)));
     }
 }
