@@ -1,6 +1,8 @@
 plugins {
     id("io.papermc.paperweight.userdev") version "1.5.9"
 
+    id("xyz.jpenilla.run-paper") version "2.2.3"
+
     `java-library`
 }
 
@@ -37,6 +39,18 @@ tasks {
     compileJava {
         options.encoding = "UTF-8"
         options.release.set(17)
+    }
+
+    runServer {
+        jvmArgs("-Dnet.kyori.ansi.colorLevel=truecolor")
+
+        defaultCharacterEncoding = Charsets.UTF_8.name()
+
+        minecraftVersion(mcVersion)
+
+        downloadPlugins {
+            hangar("Chunky", "1.3.136")
+        }
     }
 
     val jarsDir = File("$rootDir/jars")
