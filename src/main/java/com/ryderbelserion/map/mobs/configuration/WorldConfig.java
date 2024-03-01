@@ -80,6 +80,7 @@ public class WorldConfig extends AbstractConfig {
 
     public WorldConfig(@NotNull World world) {
         this.world = world;
+
         reload();
     }
 

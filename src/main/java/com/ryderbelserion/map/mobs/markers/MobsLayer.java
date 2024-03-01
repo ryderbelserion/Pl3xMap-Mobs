@@ -23,22 +23,22 @@
  */
 package com.ryderbelserion.map.mobs.markers;
 
-import java.util.Collection;
-import java.util.HashSet;
-
 import com.ryderbelserion.map.mobs.Pl3xMapMobs;
+import com.ryderbelserion.map.mobs.configuration.WorldConfig;
 import net.pl3x.map.core.markers.Point;
 import net.pl3x.map.core.markers.layer.WorldLayer;
 import net.pl3x.map.core.markers.marker.Marker;
 import net.pl3x.map.core.markers.option.Options;
 import net.pl3x.map.core.markers.option.Tooltip;
-import com.ryderbelserion.map.mobs.configuration.WorldConfig;
 import org.bukkit.Bukkit;
 import org.bukkit.Location;
 import org.bukkit.World;
 import org.bukkit.entity.Mob;
 import org.bukkit.plugin.java.JavaPlugin;
 import org.jetbrains.annotations.NotNull;
+import java.util.Collection;
+import java.util.HashSet;
+import java.util.concurrent.TimeUnit;
 
 public class MobsLayer extends WorldLayer {
 
@@ -46,10 +46,13 @@ public class MobsLayer extends WorldLayer {
 
     public static final String KEY = "pl3xmap_mobs";
 
+    private final Collection<Marker<?>> markers = new HashSet<>();
+
     private final WorldConfig config;
 
     public MobsLayer(@NotNull WorldConfig config) {
         super(KEY, config.getWorld(), () -> config.LAYER_LABEL);
+
         this.config = config;
 
         setShowControls(config.LAYER_SHOW_CONTROLS);
@@ -60,8 +63,8 @@ public class MobsLayer extends WorldLayer {
     }
 
     private @NotNull String mob(@NotNull Mob mob) {
-        @SuppressWarnings("deprecation")
         String name = mob.getCustomName();
+
         return name == null ? mob.getName() : name;
     }
 
@@ -71,26 +74,28 @@ public class MobsLayer extends WorldLayer {
 
     @Override
     public @NotNull Collection<Marker<?>> getMarkers() {
-        Collection<Marker<?>> markers = new HashSet<>();
+        retrieveMarkers();
+
+        return this.markers;
+    }
+
+    private void retrieveMarkers() {
         World bukkitWorld = Bukkit.getWorld(this.config.getWorld().getName());
 
+        // If world is null, do fuck all.
         if (bukkitWorld == null) {
-            return markers;
+            return;
         }
 
         plugin.getServer().getScheduler().runTask(plugin, () -> bukkitWorld.getEntitiesByClass(Mob.class).forEach(mob -> {
             if (config.ONLY_SHOW_MOBS_EXPOSED_TO_SKY && bukkitWorld.getHighestBlockYAt(mob.getLocation()) > mob.getLocation().getY()) {
                 return;
             }
-            String key = String.format("%s_%s_%s", KEY, getWorld().getName(), mob.getUniqueId());
-            markers.add(Marker.icon(key, point(mob.getLocation()), Icon.get(mob).getKey(), this.config.ICON_SIZE)
-                    .setOptions(Options.builder()
-                            .tooltipDirection(Tooltip.Direction.TOP)
-                            .tooltipContent(config.ICON_TOOLTIP_CONTENT
-                                    .replace("<mob-id>", mob(mob))
-                            ).build()));
-        }));
 
-        return markers;
+            String key = String.format("%s_%s_%s", KEY, getWorld().getName(), mob.getUniqueId());
+
+            this.markers.add(Marker.icon(key, point(mob.getLocation()), Icon.get(mob).getKey(), this.config.ICON_SIZE)
+                    .setOptions(Options.builder().tooltipDirection(Tooltip.Direction.TOP).tooltipContent(config.ICON_TOOLTIP_CONTENT.replace("<mob-id>", mob(mob))).build()));
+        }));
     }
 }
