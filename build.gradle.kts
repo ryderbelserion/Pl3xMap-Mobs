@@ -6,6 +6,10 @@ plugins {
     `java-library`
 }
 
+base {
+    archivesName.set(rootProject.name)
+}
+
 repositories {
     maven("https://repo.papermc.io/repository/maven-public/")
 
@@ -56,15 +60,20 @@ tasks {
     val jarsDir = File("$rootDir/jars")
 
     assemble {
-        if (jarsDir.exists()) jarsDir.delete()
+        doFirst {
+            delete(jarsDir)
 
-        jarsDir.mkdirs()
+            jarsDir.mkdirs()
+        }
 
         dependsOn(reobfJar)
-    }
 
-    reobfJar {
-        outputJar.set(file("$jarsDir/${rootProject.name}-${rootProject.version}.jar"))
+        doLast {
+            copy {
+                from(rootProject.layout.buildDirectory.files("libs/${rootProject.name}-${rootProject.version}.jar"))
+                into(jarsDir)
+            }
+        }
     }
 
     processResources {
