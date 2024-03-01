@@ -23,6 +23,7 @@
  */
 package com.ryderbelserion.map.mobs.listener;
 
+import com.ryderbelserion.map.mobs.Pl3xMapMobs;
 import com.ryderbelserion.map.mobs.markers.Icon;
 import com.ryderbelserion.map.mobs.markers.MobsLayer;
 import net.pl3x.map.core.Pl3xMap;
@@ -38,6 +39,9 @@ import org.bukkit.event.Listener;
 import org.jetbrains.annotations.NotNull;
 
 public class WorldListener implements EventListener, Listener {
+
+    @NotNull
+    private final Pl3xMapMobs plugin = Pl3xMapMobs.get();
 
     public WorldListener() {
         Pl3xMap.api().getEventRegistry().register(this);
@@ -62,11 +66,19 @@ public class WorldListener implements EventListener, Listener {
     @EventHandler
     public void onWorldUnloaded(@NotNull WorldUnloadedEvent event) {
         try {
+            // Clear when world is unloaded.
+            this.plugin.getMobsManager().clearMarkers(event.getWorld().getName());
+
+            // Unregister layer.
             event.getWorld().getLayerRegistry().unregister(MobsLayer.KEY);
         } catch (Throwable ignore) {}
     }
 
     private void registerWorld(@NotNull World world) {
+        // Add new world.
+        this.plugin.getMobsManager().addWorld(world.getName());
+
+        // Add new layer.
         world.getLayerRegistry().register(new MobsLayer(new WorldConfig(world)));
     }
 }

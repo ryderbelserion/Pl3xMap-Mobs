@@ -55,6 +55,8 @@ tasks {
         downloadPlugins {
             hangar("Chunky", "1.3.136")
 
+            modrinth("pl3xmap", providers.gradleProperty("pl3xmapVersion").get())
+
             url("https://ci.lucko.me/job/spark/401/artifact/spark-bukkit/build/libs/spark-1.10.60-bukkit.jar")
         }
     }

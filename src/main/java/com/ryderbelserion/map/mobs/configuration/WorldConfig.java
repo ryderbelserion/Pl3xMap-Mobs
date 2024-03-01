@@ -27,6 +27,7 @@ import java.nio.file.Path;
 import java.util.Map;
 
 import com.ryderbelserion.map.mobs.Pl3xMapMobs;
+import com.ryderbelserion.map.mobs.markers.MobsManager;
 import libs.org.simpleyaml.configuration.ConfigurationSection;
 import net.pl3x.map.core.configuration.AbstractConfig;
 import net.pl3x.map.core.markers.Vector;
@@ -88,8 +89,11 @@ public class WorldConfig extends AbstractConfig {
         return this.world;
     }
 
+    @NotNull
+    private final Pl3xMapMobs plugin = Pl3xMapMobs.get();
+
     public void reload() {
-        Path mainDir = Pl3xMapMobs.getPlugin(Pl3xMapMobs.class).getDataFolder().toPath();
+        Path mainDir = this.plugin.getDataFolder().toPath();
         reload(mainDir.resolve("config.yml"), WorldConfig.class);
     }
 
@@ -124,8 +128,8 @@ public class WorldConfig extends AbstractConfig {
             if (value instanceof ConfigurationSection section) {
                 return Vector.of(section.getDouble("x"), section.getDouble("z"));
             } else if (value instanceof Map<?, ?>) {
-                @SuppressWarnings("unchecked")
                 Map<String, Double> map = (Map<String, Double>) value;
+
                 return Vector.of(map.get("x"), map.get("z"));
             }
         }

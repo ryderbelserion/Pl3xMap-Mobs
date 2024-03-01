@@ -30,13 +30,13 @@ import net.pl3x.map.core.markers.marker.Marker;
 import org.bukkit.Bukkit;
 import org.bukkit.World;
 import org.bukkit.entity.Mob;
-import org.bukkit.plugin.java.JavaPlugin;
 import org.jetbrains.annotations.NotNull;
 import java.util.Collection;
 
 public class MobsLayer extends WorldLayer {
 
-    public static final Pl3xMapMobs plugin = JavaPlugin.getPlugin(Pl3xMapMobs.class);
+    @NotNull
+    private final Pl3xMapMobs plugin = Pl3xMapMobs.get();
 
     public static final String KEY = "pl3xmap_mobs";
 
@@ -58,7 +58,7 @@ public class MobsLayer extends WorldLayer {
     public @NotNull Collection<Marker<?>> getMarkers() {
         retrieveMarkers();
 
-        return MobsManager.getActiveMarkers();
+        return this.plugin.getMobsManager().getActiveMarkers(getWorld().getName());
     }
 
     private void retrieveMarkers() {
@@ -76,7 +76,7 @@ public class MobsLayer extends WorldLayer {
 
                     String key = String.format("%s_%s_%s", KEY, getWorld().getName(), mob.getUniqueId());
 
-                    MobsManager.addMarker(key, mob, this.config);
+                    this.plugin.getMobsManager().addMarker(key, mob, this.config);
                 }
         ));
     }
