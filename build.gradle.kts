@@ -54,6 +54,8 @@ tasks {
 
         downloadPlugins {
             hangar("Chunky", "1.3.136")
+
+            url("https://ci.lucko.me/job/spark/401/artifact/spark-bukkit/build/libs/spark-1.10.60-bukkit.jar")
         }
     }
 

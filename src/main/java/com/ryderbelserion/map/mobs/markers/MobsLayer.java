@@ -25,27 +25,20 @@ package com.ryderbelserion.map.mobs.markers;
 
 import com.ryderbelserion.map.mobs.Pl3xMapMobs;
 import com.ryderbelserion.map.mobs.configuration.WorldConfig;
-import net.pl3x.map.core.markers.Point;
 import net.pl3x.map.core.markers.layer.WorldLayer;
 import net.pl3x.map.core.markers.marker.Marker;
-import net.pl3x.map.core.markers.option.Options;
-import net.pl3x.map.core.markers.option.Tooltip;
 import org.bukkit.Bukkit;
-import org.bukkit.Location;
 import org.bukkit.World;
 import org.bukkit.entity.Mob;
 import org.bukkit.plugin.java.JavaPlugin;
 import org.jetbrains.annotations.NotNull;
 import java.util.Collection;
-import java.util.HashSet;
 
 public class MobsLayer extends WorldLayer {
 
     public static final Pl3xMapMobs plugin = JavaPlugin.getPlugin(Pl3xMapMobs.class);
 
     public static final String KEY = "pl3xmap_mobs";
-
-    private final Collection<Marker<?>> activeMarkers = new HashSet<>();
 
     private final WorldConfig config;
 
@@ -61,21 +54,11 @@ public class MobsLayer extends WorldLayer {
         setZIndex(config.LAYER_ZINDEX);
     }
 
-    private @NotNull String mob(@NotNull Mob mob) {
-        String name = mob.getCustomName();
-
-        return name == null ? mob.getName() : name;
-    }
-
-    private @NotNull Point point(@NotNull Location loc) {
-        return Point.of(loc.getBlockX(), loc.getBlockZ());
-    }
-
     @Override
     public @NotNull Collection<Marker<?>> getMarkers() {
         retrieveMarkers();
 
-        return this.activeMarkers;
+        return MobsManager.getActiveMarkers();
     }
 
     private void retrieveMarkers() {
@@ -87,18 +70,14 @@ public class MobsLayer extends WorldLayer {
         }
 
         plugin.getServer().getScheduler().runTask(plugin, () -> bukkitWorld.getEntitiesByClass(Mob.class).forEach(mob -> {
-            if (config.ONLY_SHOW_MOBS_EXPOSED_TO_SKY && bukkitWorld.getHighestBlockYAt(mob.getLocation()) > mob.getLocation().getY()) {
-                return;
-            }
+                    if (config.ONLY_SHOW_MOBS_EXPOSED_TO_SKY && bukkitWorld.getHighestBlockYAt(mob.getLocation()) > mob.getLocation().getY()) {
+                        return;
+                    }
 
-            String key = String.format("%s_%s_%s", KEY, getWorld().getName(), mob.getUniqueId());
+                    String key = String.format("%s_%s_%s", KEY, getWorld().getName(), mob.getUniqueId());
 
-            net.pl3x.map.core.markers.marker.@NotNull Icon icon = Marker.icon(key, point(mob.getLocation()), Icon.get(mob).getKey(), this.config.ICON_SIZE)
-                    .setOptions(Options.builder().tooltipDirection(Tooltip.Direction.TOP).tooltipContent(config.ICON_TOOLTIP_CONTENT.replace("<mob-id>", mob(mob))).build());
-
-            this.activeMarkers.removeIf(value -> value.getKey().equals(icon.getKey()));
-
-            this.activeMarkers.add(icon);
-        }));
+                    MobsManager.addMarker(key, mob, this.config);
+                }
+        ));
     }
 }
