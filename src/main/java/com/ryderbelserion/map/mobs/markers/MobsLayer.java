@@ -38,7 +38,6 @@ import org.bukkit.plugin.java.JavaPlugin;
 import org.jetbrains.annotations.NotNull;
 import java.util.Collection;
 import java.util.HashSet;
-import java.util.concurrent.TimeUnit;
 
 public class MobsLayer extends WorldLayer {
 
@@ -46,7 +45,7 @@ public class MobsLayer extends WorldLayer {
 
     public static final String KEY = "pl3xmap_mobs";
 
-    private final Collection<Marker<?>> markers = new HashSet<>();
+    private final Collection<Marker<?>> activeMarkers = new HashSet<>();
 
     private final WorldConfig config;
 
@@ -76,7 +75,7 @@ public class MobsLayer extends WorldLayer {
     public @NotNull Collection<Marker<?>> getMarkers() {
         retrieveMarkers();
 
-        return this.markers;
+        return this.activeMarkers;
     }
 
     private void retrieveMarkers() {
@@ -94,8 +93,12 @@ public class MobsLayer extends WorldLayer {
 
             String key = String.format("%s_%s_%s", KEY, getWorld().getName(), mob.getUniqueId());
 
-            this.markers.add(Marker.icon(key, point(mob.getLocation()), Icon.get(mob).getKey(), this.config.ICON_SIZE)
-                    .setOptions(Options.builder().tooltipDirection(Tooltip.Direction.TOP).tooltipContent(config.ICON_TOOLTIP_CONTENT.replace("<mob-id>", mob(mob))).build()));
+            net.pl3x.map.core.markers.marker.@NotNull Icon icon = Marker.icon(key, point(mob.getLocation()), Icon.get(mob).getKey(), this.config.ICON_SIZE)
+                    .setOptions(Options.builder().tooltipDirection(Tooltip.Direction.TOP).tooltipContent(config.ICON_TOOLTIP_CONTENT.replace("<mob-id>", mob(mob))).build());
+
+            this.activeMarkers.removeIf(value -> value.getKey().equals(icon.getKey()));
+
+            this.activeMarkers.add(icon);
         }));
     }
 }
