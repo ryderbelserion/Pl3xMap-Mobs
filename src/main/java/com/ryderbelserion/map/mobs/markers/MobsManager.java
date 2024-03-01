@@ -9,36 +9,42 @@ import org.bukkit.Bukkit;
 import org.bukkit.Location;
 import org.bukkit.entity.Mob;
 import org.jetbrains.annotations.NotNull;
-import java.util.Collection;
-import java.util.Collections;
-import java.util.HashSet;
-import java.util.UUID;
+
+import java.util.*;
 
 public class MobsManager {
 
-    private static final Collection<Marker<?>> activeMarkers = new HashSet<>();
+    private static final Map<String, Collection<Marker<?>>> activeMarkers = new HashMap<>();
 
-    public static Collection<Marker<?>> getActiveMarkers() {
-        return Collections.unmodifiableCollection(activeMarkers);
+    public static Collection<Marker<?>> getActiveMarkers(String worldName) {
+        return Collections.unmodifiableCollection(activeMarkers.get(worldName));
+    }
+
+    public static void clearMarkers(String worldName) {
+        if (activeMarkers.get(worldName) != null) {
+            activeMarkers.get(worldName).clear();
+        }
+
+        activeMarkers.remove(worldName);
     }
 
     public static void addMarker(String key, Mob mob, WorldConfig config) {
         net.pl3x.map.core.markers.marker.Icon icon = getIcon(key, mob, config);
 
         // Remove it if it exists.
-        removeMarker(mob.getUniqueId());
+        removeMarker(mob.getUniqueId(), config);
 
         // then add it back.
-        activeMarkers.add(icon);
+        activeMarkers.get(config.getWorld().getName()).add(icon);
     }
 
-    public static void removeMarker(UUID uuid) {
+    public static void removeMarker(UUID uuid, WorldConfig config) {
         Mob mob = (Mob) Bukkit.getEntity(uuid);
 
         if (mob != null) {
             String key = String.format("%s_%s_%s", "pl3xmap_mobs", mob.getWorld().getName(), mob.getUniqueId());
 
-            activeMarkers.removeIf(value -> value.getKey().equalsIgnoreCase(key));
+            activeMarkers.get(config.getWorld().getName()).removeIf(value -> value.getKey().equalsIgnoreCase(key));
         }
     }
 

@@ -36,7 +36,7 @@ import java.util.Collection;
 
 public class MobsLayer extends WorldLayer {
 
-    public static final Pl3xMapMobs plugin = JavaPlugin.getPlugin(Pl3xMapMobs.class);
+    private final Pl3xMapMobs plugin = JavaPlugin.getPlugin(Pl3xMapMobs.class);
 
     public static final String KEY = "pl3xmap_mobs";
 
@@ -58,7 +58,7 @@ public class MobsLayer extends WorldLayer {
     public @NotNull Collection<Marker<?>> getMarkers() {
         retrieveMarkers();
 
-        return MobsManager.getActiveMarkers();
+        return MobsManager.getActiveMarkers(getWorld().getName());
     }
 
     private void retrieveMarkers() {

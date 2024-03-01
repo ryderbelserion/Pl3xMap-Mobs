@@ -25,6 +25,7 @@ package com.ryderbelserion.map.mobs.listener;
 
 import com.ryderbelserion.map.mobs.markers.Icon;
 import com.ryderbelserion.map.mobs.markers.MobsLayer;
+import com.ryderbelserion.map.mobs.markers.MobsManager;
 import net.pl3x.map.core.Pl3xMap;
 import net.pl3x.map.core.event.EventHandler;
 import net.pl3x.map.core.event.EventListener;
@@ -62,6 +63,10 @@ public class WorldListener implements EventListener, Listener {
     @EventHandler
     public void onWorldUnloaded(@NotNull WorldUnloadedEvent event) {
         try {
+            // Clear when world is unloaded.
+            MobsManager.clearMarkers(event.getWorld().getName());
+
+            // Unregister layer.
             event.getWorld().getLayerRegistry().unregister(MobsLayer.KEY);
         } catch (Throwable ignore) {}
     }

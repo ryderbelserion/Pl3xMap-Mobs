@@ -27,6 +27,7 @@ import java.nio.file.Path;
 import java.util.Map;
 
 import com.ryderbelserion.map.mobs.Pl3xMapMobs;
+import com.ryderbelserion.map.mobs.markers.MobsManager;
 import libs.org.simpleyaml.configuration.ConfigurationSection;
 import net.pl3x.map.core.configuration.AbstractConfig;
 import net.pl3x.map.core.markers.Vector;
@@ -91,6 +92,8 @@ public class WorldConfig extends AbstractConfig {
     public void reload() {
         Path mainDir = Pl3xMapMobs.getPlugin(Pl3xMapMobs.class).getDataFolder().toPath();
         reload(mainDir.resolve("config.yml"), WorldConfig.class);
+
+        MobsManager.clearMarkers(getWorld().getName());
     }
 
     @Override
