@@ -80,6 +80,7 @@ public enum Icon {
     CAT_TABBY(EntityType.CAT, Icon.<Cat>predicate(mob -> mob.getCatType() == Cat.Type.TABBY)),
     CAT_TUXEDO(EntityType.CAT, Icon.<Cat>predicate(mob -> mob.getCatType() == Cat.Type.ALL_BLACK)),
     CAT_WHITE(EntityType.CAT, Icon.<Cat>predicate(mob -> mob.getCatType() == Cat.Type.WHITE)),
+    BREEZE(EntityType.BREEZE),
     CAVE_SPIDER(EntityType.CAVE_SPIDER),
     CHICKEN(EntityType.CHICKEN),
     COD(EntityType.COD),
