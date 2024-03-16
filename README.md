@@ -14,8 +14,8 @@ Mob icons are provided by [ADHCMC](https://github.com/ADHDMC) ([CC0-1.0](https:/
 ## Downloads
 https://jenkins.crazycrew.us/view/other/job/Pl3xMap-Mobs/
 
-## Support
-https://discord.gg/badbones-s-live-chat-182615261403283459
+## Contact
+  [![Join us on Discord](https://discord.com/api/guilds/182615261403283459/widget.png?style=banner2)](https://discord.gg/badbones-s-live-chat-182615261403283459)
 
 ## Installation
 1) Place the jar inside your server's `plugins` folder
